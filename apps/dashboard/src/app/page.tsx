@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@burger-ai/ui';
 import { Product, Promotion, Media, ClientProjectConfig } from '@burger-ai/types';
 
+const PLAYER_URL = process.env.NEXT_PUBLIC_PLAYER_URL || 'http://localhost:3002';
+
 // Mock initial client profiles (Multi-Tenant)
 const initialClients: ClientProjectConfig[] = [
   {
@@ -2766,7 +2768,7 @@ export default function DashboardPage() {
                       Gerencie a programação das TVs em tempo real com agendamento inteligente.
                     </p>
                     <button
-                      onClick={() => window.open('http://localhost:3002', '_blank')}
+                      onClick={() => window.open(PLAYER_URL, '_blank')}
                       style={{
                         marginTop: '0.6rem',
                         padding: '0.4rem 0.9rem',
@@ -3117,9 +3119,9 @@ export default function DashboardPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(46, 196, 182, 0.05)', border: '1px solid rgba(46, 196, 182, 0.15)', borderRadius: '10px', padding: '0.5rem 1rem', fontSize: '0.75rem' }}>
                       <span style={{ color: 'var(--accent-success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                         <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent-success)', display: 'inline-block' }} />
-                        SINAL DO CANAL ATIVO: http://localhost:3002
+                        SINAL DO CANAL ATIVO: {PLAYER_URL}
                       </span>
-                      <a href="http://localhost:3002" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', textDecoration: 'underline', fontWeight: 700 }}>Abrir TV Player Fullscreen</a>
+                      <a href={PLAYER_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', textDecoration: 'underline', fontWeight: 700 }}>Abrir TV Player Fullscreen</a>
                     </div>
                   </div>
 
