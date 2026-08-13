@@ -196,13 +196,13 @@ export async function registerRoutes(fastify: FastifyInstance) {
         include: { media: true, promotions: true },
         orderBy: { created_at: 'desc' },
       });
-      return products.map(p => {
+      return products.map((p: any) => {
         let parsedIngredients: any = p.ingredientes;
         if (typeof p.ingredientes === 'string') {
           try {
             parsedIngredients = JSON.parse(p.ingredientes);
           } catch (e) {
-            parsedIngredients = p.ingredientes.split(',').map(s => s.trim());
+            parsedIngredients = p.ingredientes.split(',').map((s: string) => s.trim());
           }
         }
         return {
