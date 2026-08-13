@@ -57,6 +57,11 @@ let activeSettings = {
 import { supabase } from '@burger-ai/database';
 
 export async function registerRoutes(fastify: FastifyInstance) {
+  // Root endpoint / health check
+  fastify.get('/', async () => {
+    return { status: 'ok', message: 'Burger AI Studio API is running' };
+  });
+
   // SETTINGS ENDPOINTS FOR TV/DASHBOARD CROSS-PORT SYNC & SUPABASE CLOUD
   fastify.get('/api/settings', async () => {
     try {
