@@ -4,7 +4,7 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:packages --prefix ../.. && tsc",
+    "build": "npm run build --prefix ../.. --workspace=@burger-ai/types --workspace=@burger-ai/database && tsc",
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
     "start": "node dist/index.js"
   },
