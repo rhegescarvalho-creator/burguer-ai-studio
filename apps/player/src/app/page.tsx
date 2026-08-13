@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import type { Product, Promotion } from '@burger-ai/types';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 // Seed initial products (fallback)
 const initialProducts: Product[] = [
   {
@@ -106,7 +108,7 @@ export default function PlayerPage() {
 
   // Sync loader function
   const refreshDataFromSource = () => {
-    const API_URL = 'http://localhost:3001';
+    
     
     // Fetch Settings (Active client, active theme, TV Studio configurations)
     fetch(`${API_URL}/api/settings`)

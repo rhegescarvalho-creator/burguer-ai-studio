@@ -5,6 +5,7 @@ import { Button } from '@burger-ai/ui';
 import { Product, Promotion, Media, ClientProjectConfig } from '@burger-ai/types';
 
 const PLAYER_URL = process.env.NEXT_PUBLIC_PLAYER_URL || 'http://localhost:3002';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 // Mock initial client profiles (Multi-Tenant)
 const initialClients: ClientProjectConfig[] = [
@@ -681,7 +682,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     // Sincroniza configurações e playlists do TV Studio da API com fallback do Supabase
-    fetch('http://localhost:3001/api/settings')
+    fetch(`${API_URL}/api/settings`)
       .then(res => res.json())
       .then(settings => {
         if (settings.activeTheme) setActiveTheme(settings.activeTheme);
@@ -816,7 +817,7 @@ export default function DashboardPage() {
       notifyTvUpdate();
       
       // Sincroniza com a API Global para atualização do TV Player
-      fetch('http://localhost:3001/api/settings', {
+      fetch(`${API_URL}/api/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -899,7 +900,7 @@ export default function DashboardPage() {
     notifyTvUpdate();
 
     // Sincroniza o template com a API Global para atualização do TV Player
-    fetch('http://localhost:3001/api/settings', {
+    fetch(`${API_URL}/api/settings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ activeTheme: themeId })
@@ -1155,8 +1156,6 @@ export default function DashboardPage() {
     };
     reader.readAsDataURL(file);
   };
-
-  const API_URL = 'http://localhost:3001';
 
   // Hydrate lists
   useEffect(() => {
@@ -2680,12 +2679,12 @@ export default function DashboardPage() {
                 });
                 channel.close();
               } catch (e) {}
-              fetch('http://localhost:3001/api/tv/sync').catch(() => {});
+              fetch(`${API_URL}/api/tv/sync`).catch(() => {});
             };
 
             const saveTvStudioState = (updatedPlaylists: Record<string, any[]>) => {
               safeSetLocalStorage('burger_studio_tv_playlists', JSON.stringify(updatedPlaylists));
-              fetch('http://localhost:3001/api/settings', {
+              fetch(`${API_URL}/api/settings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
