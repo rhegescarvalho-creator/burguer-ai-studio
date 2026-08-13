@@ -1,0 +1,11 @@
+/* Template Instagram 01 - Sleek Dark */
+.template-insta-01 {
+  background-color: #09090b;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.template-insta-01 .accent {
+  color: #D4AF37; /* Dourado */
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}

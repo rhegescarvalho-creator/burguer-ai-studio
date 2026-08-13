@@ -1,0 +1,103 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+model Restaurant {
+  id             String     @id @default(uuid())
+  name           String
+  slug           String     @unique
+  logoUrl        String?
+  primaryColor   String?    @default("#E63946")
+  secondaryColor String?    @default("#1D3557")
+  createdAt      DateTime   @default(now())
+  campaigns      Campaign[]
+  products       Product[]
+}
+
+model Campaign {
+  id           String      @id @default(uuid())
+  restaurantId String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  name         String
+  theme        String
+  status       String      @default("DRAFT") // DRAFT, GENERATING, READY, PUBLISHED, FAILED
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  assets       Asset[]
+  tasks        AgentTask[]
+}
+
+model Asset {
+  id         String    @id @default(uuid())
+  campaignId String
+  campaign   Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  type       String    // COPYWRITING, IMAGE, VIDEO, TV_BOARD, SOCIAL_POST
+  url        String?
+  content    String?
+  metadata   String?   @default("{}")
+  createdAt  DateTime  @default(now())
+}
+
+model AgentTask {
+  id         String   @id @default(uuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  agent      String   // orchestrator, copywriter, etc.
+  status     String   @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED
+  input      String?  @default("{}")
+  output     String?  @default("{}")
+  error      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Product {
+  id           String      @id @default(uuid())
+  nome         String
+  slug         String      @unique @default("")
+  categoria    String
+  preco        Float       @map("preço")
+  descricao    String?     @map("descrição")
+  ingredientes String      @default("[]")
+  ativo        Boolean     @default(true)
+  imagem       String?
+  created_at   DateTime    @default(now())
+  
+  // Relations
+  restaurantId String?
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: SetNull)
+  media        Media[]
+  promotions   Promotion[]
+}
+
+model Promotion {
+  id        String    @id @default(uuid())
+  title     String
+  discount  Float
+  startDate DateTime
+  endDate   DateTime
+  
+  // Relations
+  products  Product[]
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  produtoId String   @map("produto")
+  product   Product  @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+  tipo      String   // imagem, video, post, story, tv
+  caminho   String
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,10 @@
+/* Template TV 01 - Cyber Neon */
+.template-tv-01 {
+  background: linear-gradient(135deg, #050508 0%, #0B0B12 100%);
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+}
+.template-tv-01 .accent {
+  color: #FF5A1F;
+  border-color: #2EC4B6;
+}

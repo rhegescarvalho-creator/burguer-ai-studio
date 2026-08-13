@@ -1,0 +1,9 @@
+/* Template Story Claro - Fresh Day */
+.template-story-light {
+  background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+  color: #1E293B;
+  font-family: 'Outfit', sans-serif;
+}
+.template-story-light .accent {
+  color: #FF5A1F;
+}

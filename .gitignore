@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production / Build outputs
+dist
+/build
+.next
+out
+
+# Local Env Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Databases
+*.db
+*.db-journal
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Storage outputs & uploads (exclude files but keep directories using .gitkeep)
+storage/outputs/*
+!storage/outputs/.gitkeep
+storage/temp/*
+!storage/temp/.gitkeep
+storage/images/generated/*
+!storage/images/generated/.gitkeep
+storage/images/uploaded/*
+!storage/images/uploaded/.gitkeep
+storage/videos/generated/*
+!storage/videos/generated/.gitkeep
+storage/videos/uploaded/*
+!storage/videos/uploaded/.gitkeep
+storage/images/edited/*
+!storage/images/edited/.gitkeep
+storage/videos/edited/*
+!storage/videos/edited/.gitkeep

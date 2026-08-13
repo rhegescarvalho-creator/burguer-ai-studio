@@ -1,0 +1,10 @@
+/* Template Instagram 02 - Vibrant Fire */
+.template-insta-02 {
+  background: linear-gradient(135deg, #7F1D1D 0%, #FF5A1F 100%);
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+}
+.template-insta-02 .accent {
+  color: #FFB703;
+  text-shadow: 0 0 15px rgba(255, 183, 3, 0.4);
+}

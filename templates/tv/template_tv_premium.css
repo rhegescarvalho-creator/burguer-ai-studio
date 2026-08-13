@@ -1,0 +1,10 @@
+/* Template TV Premium - Gold & Wood */
+.template-tv-premium {
+  background: linear-gradient(135deg, #111115 0%, #1F1F27 100%);
+  color: #ffffff;
+  font-family: 'Playfair Display', serif;
+}
+.template-tv-premium .accent {
+  color: #DFB15B;
+  text-shadow: 0 0 12px rgba(223, 177, 91, 0.35);
+}

@@ -1,0 +1,9 @@
+/* Template Banner - Crimson Discount */
+.template-banner {
+  background: linear-gradient(135deg, #7F0000 0%, #E63946 100%);
+  color: #FFFFFF;
+  font-family: 'Outfit', sans-serif;
+}
+.template-banner .accent {
+  color: #FFD166;
+}

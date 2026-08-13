@@ -1,0 +1,34 @@
+{
+  "name": "burger-ai-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-Agent AI Studio for Burger Shops promotional material generation",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "agents/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:all": "node start-all.js",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:dashboard": "npm run dev --workspace=apps/dashboard",
+    "dev:player": "npm run dev --workspace=apps/player",
+    "start:api": "npm run start --workspace=apps/api",
+    "start:dashboard": "npm run start --workspace=apps/dashboard",
+    "start:player": "npm run start --workspace=apps/player",
+    "build:packages": "npm run build --workspace=packages/types --workspace=packages/prompts --workspace=packages/database --workspace=packages/ui --workspace=packages/auth --workspace=packages/logger",
+    "build:agents": "npm run build --workspace=agents/orchestrator --workspace=agents/copywriter --workspace=agents/designer --workspace=agents/image --workspace=agents/video --workspace=agents/tv --workspace=agents/social --workspace=agents/publisher",
+    "build:apps": "npm run build --workspace=apps/api --workspace=apps/dashboard --workspace=apps/player",
+    "build": "npm run build:packages && npm run build:agents && npm run build:apps",
+    "test": "npm run test --workspaces --if-present",
+    "prisma:generate": "npm run prisma:generate --workspace=packages/database",
+    "prisma:migrate": "npm run prisma:migrate --workspace=packages/database"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3"
+  }
+}

@@ -1,0 +1,9 @@
+/* Template Story Escuro - Moody Night */
+.template-story-dark {
+  background: linear-gradient(135deg, #1C120C 0%, #3E2723 100%);
+  color: #FFE0B2;
+  font-family: 'Outfit', sans-serif;
+}
+.template-story-dark .accent {
+  color: #FF8A65;
+}
