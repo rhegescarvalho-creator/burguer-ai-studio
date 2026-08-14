@@ -158,13 +158,18 @@ export default function PlayerPage() {
             .then(({ data }: any) => {
               setIsLoaded(true);
               if (data && data.playlists) {
-                setTvPlaylists(data.playlists);
-                if (data.active_tv_id) setActiveTvId(data.active_tv_id);
-                if (data.active_music) setSelectedMusic(data.active_music);
-                if (data.active_turno) setActiveTurno(data.active_turno);
-                if (data.ad_interval_minutes) setAdInterval(data.ad_interval_minutes);
-                if (data.ad_partner_name) setAdPartner(data.ad_partner_name);
-                if (data.ad_duration_seconds) setAdDuration(data.ad_duration_seconds);
+                setTvPlaylists(prev => {
+                  if (JSON.stringify(prev) !== JSON.stringify(data.playlists)) {
+                    return data.playlists;
+                  }
+                  return prev;
+                });
+                if (data.active_tv_id) setActiveTvId(prev => prev !== data.active_tv_id ? data.active_tv_id : prev);
+                if (data.active_music) setSelectedMusic(prev => prev !== data.active_music ? data.active_music : prev);
+                if (data.active_turno) setActiveTurno(prev => prev !== data.active_turno ? data.active_turno : prev);
+                if (data.ad_interval_minutes) setAdInterval(prev => prev !== data.ad_interval_minutes ? data.ad_interval_minutes : prev);
+                if (data.ad_partner_name) setAdPartner(prev => prev !== data.ad_partner_name ? data.ad_partner_name : prev);
+                if (data.ad_duration_seconds) setAdDuration(prev => prev !== data.ad_duration_seconds ? data.ad_duration_seconds : prev);
               }
             }).catch(() => {
               setIsLoaded(true);
