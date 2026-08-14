@@ -75,7 +75,8 @@ export async function registerRoutes(fastify: FastifyInstance) {
           activeTurno: data.active_turno || activeSettings.activeTurno,
           adIntervalMinutes: data.ad_interval_minutes || activeSettings.adIntervalMinutes,
           adPartnerName: data.ad_partner_name || activeSettings.adPartnerName,
-          adDurationSeconds: data.ad_duration_seconds || activeSettings.adDurationSeconds
+          adDurationSeconds: data.ad_duration_seconds || activeSettings.adDurationSeconds,
+          activeClientConfig: data.active_client_config || activeSettings.activeClientConfig
         };
       }
     } catch (e) {}
@@ -84,10 +85,32 @@ export async function registerRoutes(fastify: FastifyInstance) {
 
   fastify.post('/api/settings', async (request: FastifyRequest) => {
     const data = request.body as any;
+    
+    // 1. Fetch current settings from Supabase to prevent overwriting with memory defaults
+    try {
+      const { data: dbSettings } = await supabase.from('tv_settings').select('*').eq('id', 'default').single();
+      if (dbSettings) {
+        activeSettings = {
+          ...activeSettings,
+          playlists: dbSettings.playlists || activeSettings.playlists,
+          activeTvId: dbSettings.active_tv_id || activeSettings.activeTvId,
+          activeMusic: dbSettings.active_music || activeSettings.activeMusic,
+          activeTurno: dbSettings.active_turno || activeSettings.activeTurno,
+          adIntervalMinutes: dbSettings.ad_interval_minutes || activeSettings.adIntervalMinutes,
+          adPartnerName: dbSettings.ad_partner_name || activeSettings.adPartnerName,
+          adDurationSeconds: dbSettings.ad_duration_seconds || activeSettings.adDurationSeconds,
+          activeClientConfig: dbSettings.active_client_config || activeSettings.activeClientConfig
+        };
+      }
+    } catch (e) {}
+
+    // 2. Merge incoming payload
     activeSettings = {
       ...activeSettings,
       ...data
     };
+
+    // 3. Upsert to Supabase
     try {
       await supabase.from('tv_settings').upsert({
         id: 'default',
@@ -98,6 +121,7 @@ export async function registerRoutes(fastify: FastifyInstance) {
         ad_interval_minutes: activeSettings.adIntervalMinutes,
         ad_partner_name: activeSettings.adPartnerName,
         ad_duration_seconds: activeSettings.adDurationSeconds,
+        active_client_config: activeSettings.activeClientConfig,
         updated_at: new Date().toISOString()
       });
     } catch (e) {}
