@@ -11,24 +11,36 @@ const server = fastify({
   bodyLimit: 104857600 // 100MB limit for rich media, playlists, and base64 assets
 });
 
-const start = async () => {
-  try {
-    // Register CORS
-    await server.register(cors, {
-      origin: true, // Allow all origins for dev simplicity; specify in production
-    });
-
-    // Register routes
-    await server.register(registerRoutes);
-
-    const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
-    await server.listen({ port, host: '0.0.0.0' });
-    
-    server.log.info(`Server is running at http://localhost:${port}`);
-  } catch (err) {
-    server.log.error(err);
-    process.exit(1);
-  }
+// Setup function to register plugins and routes
+let initialized = false;
+const init = async () => {
+  if (initialized) return;
+  await server.register(cors, {
+    origin: true,
+  });
+  await server.register(registerRoutes);
+  initialized = true;
 };
 
-start();
+// For Vercel Serverless environment
+export default async (req: any, res: any) => {
+  await init();
+  await server.ready();
+  server.server.emit('request', req, res);
+};
+
+// For local running
+if (process.env.NODE_ENV !== 'production') {
+  const start = async () => {
+    try {
+      await init();
+      const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+      await server.listen({ port, host: '0.0.0.0' });
+      server.log.info(`Server is running at http://localhost:${port}`);
+    } catch (err) {
+      server.log.error(err);
+      process.exit(1);
+    }
+  };
+  start();
+}
