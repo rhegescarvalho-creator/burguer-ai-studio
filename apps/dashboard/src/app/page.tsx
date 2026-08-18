@@ -1229,8 +1229,8 @@ export default function DashboardPage() {
     notifyTvUpdate();
 
     if (singleProductAction) {
+      const { type, product } = singleProductAction;
       try {
-        const { type, product } = singleProductAction;
         if (type === 'create') {
           await fetch(`${API_URL}/api/products`, {
             method: 'POST',
@@ -1249,7 +1249,35 @@ export default function DashboardPage() {
           });
         }
       } catch (err) {
-        console.warn('API Sync failed, stored locally only:', err);
+        console.warn('API Sync failed, attempting direct Supabase fallback...', err);
+        try {
+          const { createClient } = require('@supabase/supabase-js');
+          const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qjhrlqpsfzaycoaekwqh.supabase.co';
+          const sbKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_c0x3S20RA_xIVMed3cPpFQ_kO1XXul6';
+          const sb = createClient(sbUrl, sbKey);
+          
+          if (type === 'create' || type === 'update') {
+            const { error } = await sb.from('products').upsert({
+              id: product.id,
+              nome: product.nome,
+              slug: product.slug || product.nome.toLowerCase().replace(/\s+/g, '-'),
+              categoria: product.categoria,
+              preco: product.preço || product.preco || 0,
+              descricao: product.descrição || product.descricao || '',
+              ingredientes: typeof product.ingredientes === 'string' ? product.ingredientes : JSON.stringify(product.ingredientes || []),
+              ativo: product.ativo !== false,
+              imagem: product.imagem || '/foto.png',
+              created_at: product.created_at || new Date().toISOString()
+            });
+            if (error) throw error;
+          } else if (type === 'delete') {
+            const { error } = await sb.from('products').delete().eq('id', product.id);
+            if (error) throw error;
+          }
+          console.log('Successfully saved directly to Supabase via fallback client!');
+        } catch (sbErr: any) {
+          console.error('Direct Supabase fallback write failed:', sbErr.message);
+        }
       }
     }
   };
