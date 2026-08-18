@@ -13,6 +13,8 @@ async function seed() {
     await prisma.product.deleteMany({});
     await prisma.restaurant.deleteMany({});
     await prisma.user.deleteMany({});
+    await prisma.tvSettings.deleteMany({});
+    await prisma.category.deleteMany({});
 
     console.log('Cleared existing database records.');
 
@@ -24,6 +26,47 @@ async function seed() {
         name: 'Burger Admin',
       },
     });
+
+    // 2b. Create default categories
+    const categories = [
+      { name: 'Sanduiches', icon: '🍔', desc: 'Sanduíches, smash e hambúrgueres artesanais' },
+      { name: 'Hot Dog', icon: '🌭', desc: 'Hot dogs especiais, tradicionais e prensados' },
+      { name: 'Porções', icon: '🍟', desc: 'Batatas fritas, anéis de cebola e petiscos' },
+      { name: 'Pasteis', icon: '🥟', desc: 'Pastéis fritos crocantes doces e salgados' },
+      { name: 'Salgados', icon: '🥐', desc: 'Coxinhas, kibes, empadas e salgados variados' },
+      { name: 'Refrigerantes', icon: '🥤', desc: 'Refrigerantes em lata, garrafa e zero' },
+      { name: 'Sucos', icon: '🧃', desc: 'Sucos naturais da fruta e polpas' },
+      { name: 'Bebidas Alcóolicas', icon: '🍺', desc: 'Chopps artesanais, cervejas e drinks' }
+    ];
+
+    for (const cat of categories) {
+      await prisma.category.create({
+        data: cat
+      });
+    }
+    console.log('Seeded categories.');
+
+    // 2c. Create default TV settings
+    await prisma.tvSettings.create({
+      data: {
+        id: 'default',
+        activeTvId: 'tv-salao',
+        activeMusic: 'Rock',
+        activeTurno: 'almoco',
+        adIntervalMinutes: 30,
+        adPartnerName: 'Coca-Cola',
+        adDurationSeconds: 10,
+        playlists: {
+          'tv-salao': [
+            { id: 's-1', name: 'Xis Bacon', type: 'image', duration: 10, transition: 'fade', showPrice: true, showIngredients: true, showQr: true, themeColor: '#050508', fontFamily: 'Bebas Neue', mediaUrl: '/foto.png', price: 28.00 },
+            { id: 's-2', name: 'Batata Volcano', type: 'image', duration: 7, transition: 'slide', showPrice: true, showIngredients: true, showQr: false, themeColor: '#121216', fontFamily: 'Outfit', mediaUrl: '/batata.png', price: 24.90 },
+            { id: 's-3', name: 'Milk Shake', type: 'video', duration: 12, transition: 'fade', showPrice: true, showIngredients: false, showQr: false, themeColor: '#050508', fontFamily: 'Outfit', mediaUrl: '/video.mp4', price: 32.90 },
+            { id: 's-4', name: 'Combo Terça Double Smash', type: 'image', duration: 8, transition: 'zoom', showPrice: true, showIngredients: false, showQr: true, themeColor: '#1C120C', fontFamily: 'Outfit', mediaUrl: '/foto.png', price: 32.90 }
+          ]
+        }
+      }
+    });
+    console.log('Seeded TV settings.');
     console.log(`Created user: ${user.email}`);
 
     // 3. Create default restaurant

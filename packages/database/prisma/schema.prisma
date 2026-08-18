@@ -11,56 +11,66 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String?
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("users")
 }
 
 model Restaurant {
   id             String     @id @default(uuid())
   name           String
   slug           String     @unique
-  logoUrl        String?
-  primaryColor   String?    @default("#E63946")
-  secondaryColor String?    @default("#1D3557")
-  createdAt      DateTime   @default(now())
+  logoUrl        String?    @map("logo_url")
+  primaryColor   String?    @default("#E63946") @map("primary_color")
+  secondaryColor String?    @default("#1D3557") @map("secondary_color")
+  createdAt      DateTime   @default(now()) @map("created_at")
   campaigns      Campaign[]
   products       Product[]
+
+  @@map("restaurants")
 }
 
 model Campaign {
   id           String      @id @default(uuid())
-  restaurantId String
+  restaurantId String      @map("restaurant_id")
   restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   name         String
   theme        String
   status       String      @default("DRAFT") // DRAFT, GENERATING, READY, PUBLISHED, FAILED
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
   assets       Asset[]
   tasks        AgentTask[]
+
+  @@map("campaigns")
 }
 
 model Asset {
   id         String    @id @default(uuid())
-  campaignId String
+  campaignId String    @map("campaign_id")
   campaign   Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   type       String    // COPYWRITING, IMAGE, VIDEO, TV_BOARD, SOCIAL_POST
   url        String?
   content    String?
   metadata   String?   @default("{}")
-  createdAt  DateTime  @default(now())
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@map("assets")
 }
 
 model AgentTask {
   id         String   @id @default(uuid())
-  campaignId String
+  campaignId String   @map("campaign_id")
   campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   agent      String   // orchestrator, copywriter, etc.
   status     String   @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED
   input      String?  @default("{}")
   output     String?  @default("{}")
   error      String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("agent_tasks")
 }
 
 model Product {
@@ -68,36 +78,67 @@ model Product {
   nome         String
   slug         String      @unique @default("")
   categoria    String
-  preco        Float       @map("preço")
-  descricao    String?     @map("descrição")
+  preco        Float       @map("preco")
+  descricao    String?     @map("descricao")
   ingredientes String      @default("[]")
   ativo        Boolean     @default(true)
   imagem       String?
   created_at   DateTime    @default(now())
   
   // Relations
-  restaurantId String?
+  restaurantId String?     @map("restaurant_id")
   restaurant   Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: SetNull)
   media        Media[]
   promotions   Promotion[]
+
+  @@map("products")
 }
 
 model Promotion {
   id        String    @id @default(uuid())
   title     String
   discount  Float
-  startDate DateTime
-  endDate   DateTime
+  startDate DateTime  @map("start_date")
+  endDate   DateTime  @map("end_date")
   
   // Relations
   products  Product[]
+
+  @@map("promotions")
 }
 
 model Media {
   id        String   @id @default(uuid())
-  produtoId String   @map("produto")
+  produtoId String   @map("produto_id")
   product   Product  @relation(fields: [produtoId], references: [id], onDelete: Cascade)
   tipo      String   // imagem, video, post, story, tv
   caminho   String
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("media")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  icon      String   @default("🍔")
+  desc      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("categories")
+}
+
+model TvSettings {
+  id                 String   @id @default("default")
+  playlists          Json     @default("{}")
+  activeTvId         String   @default("tv-salao") @map("active_tv_id")
+  activeMusic        String   @default("Rock") @map("active_music")
+  activeTurno        String   @default("almoco") @map("active_turno")
+  adIntervalMinutes  Int      @default(30) @map("ad_interval_minutes")
+  adPartnerName      String   @default("Coca-Cola") @map("ad_partner_name")
+  adDurationSeconds  Int      @default(10) @map("ad_duration_seconds")
+  activeClientConfig Json     @default("{\"name\":\"Smash & Co.\",\"primaryColor\":\"#FF5A1F\",\"secondaryColor\":\"#FFB703\"}") @map("active_client_config")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("tv_settings")
 }
