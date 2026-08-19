@@ -1538,7 +1538,7 @@ export default function DashboardPage() {
       }
       setEditingProductId(null);
     } else {
-      const newPid = 'p' + (products.length + 1);
+      const newPid = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'p-' + Math.random().toString(36).substring(2, 11);
       mediaList.forEach(m => m.produtoId = newPid);
 
       const newProduct: Product = {
@@ -1590,7 +1590,7 @@ export default function DashboardPage() {
   const handleDuplicateProduct = (p: Product) => {
     const duplicated: Product = {
       ...p,
-      id: 'p' + (products.length + 1) + '_dup',
+      id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'p-' + Math.random().toString(36).substring(2, 11)) + '_dup',
       nome: p.nome + ' (Cópia)',
       slug: p.slug + '-copia',
       created_at: new Date()
