@@ -1,4 +1,265 @@
-@import "../../../../packages/ui/src/styles.css";
+/* Design System Core Style Tokens */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Color Palette - Vibrant Dark Burger Theme */
+  --bg-primary: #0A0A0C;
+  --bg-secondary: #121216;
+  --bg-tertiary: #181822;
+
+  --accent-primary: #FF5A1F; /* Burger Flame Orange */
+  --accent-primary-hover: #E04810;
+  --accent-secondary: #FFB703; /* Cheddar Gold */
+  --accent-success: #2EC4B6; /* Mint Fresh */
+  --accent-error: #E63946; /* Chilli Red */
+
+  --text-primary: #F8F9FA;
+  --text-secondary: #A0AAB2;
+  --text-muted: #626D7A;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(255, 90, 31, 0.15);
+
+  /* Fonts */
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Shadows and Effects */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(255, 90, 31, 0.25);
+  --glass-effect: backdrop-filter: blur(12px);
+
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base resets & styles for embedding components */
+.burger-ui-btn {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: var(--transition-smooth);
+  border: 1px solid transparent;
+}
+
+.burger-ui-btn-primary {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #D83C00 100%);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.burger-ui-btn-primary:hover {
+  background: linear-gradient(135deg, #FF6F3D 0%, var(--accent-primary-hover) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.burger-ui-btn-secondary {
+  background: var(--bg-tertiary);
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.burger-ui-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
+}
+
+/* Glassmorphism Card Style */
+.burger-ui-card {
+  background: rgba(18, 18, 22, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+  transition: var(--transition-smooth);
+}
+
+.burger-ui-card:hover {
+  border-color: rgba(255, 90, 31, 0.3);
+  box-shadow: 0 12px 30px rgba(255, 90, 31, 0.08);
+}
+
+/* Sidebar and Main Layout */
+.burger-ui-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+.burger-ui-sidebar {
+  width: 280px;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-subtle);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.burger-ui-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding-left: 0.5rem;
+}
+
+.burger-ui-sidebar-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.burger-ui-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  transition: var(--transition-fast);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.burger-ui-sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+}
+
+.burger-ui-sidebar-item-active {
+  background-color: rgba(255, 90, 31, 0.08);
+  border-color: rgba(255, 90, 31, 0.15);
+  color: var(--accent-primary);
+}
+
+.burger-ui-sidebar-item-active:hover {
+  background-color: rgba(255, 90, 31, 0.12);
+  color: var(--accent-primary);
+}
+
+.burger-ui-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* Forms & Modal Input */
+.burger-ui-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.burger-ui-modal-content {
+  width: 100%;
+  max-width: 580px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.burger-ui-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.burger-ui-input {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  transition: var(--transition-fast);
+}
+
+.burger-ui-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 1px var(--accent-primary);
+}
+
+/* Switch styling */
+.burger-ui-switch-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Grids for products */
+.burger-ui-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.burger-ui-product-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.burger-ui-product-card-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.burger-ui-product-tag {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background-color: rgba(255, 90, 31, 0.1);
+  color: var(--accent-primary);
+  align-self: flex-start;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.burger-ui-product-price {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--accent-secondary);
+  font-size: 1.2rem;
+  margin-top: auto;
+}
 
 /* Global Body Configurations */
 * {
