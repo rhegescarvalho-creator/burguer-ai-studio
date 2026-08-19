@@ -259,10 +259,19 @@ export async function registerRoutes(fastify: FastifyInstance) {
           ingredientes: JSON.stringify(data.ingredientes || []),
           ativo: data.ativo !== false,
           imagem: data.imagem || '/foto.png',
+          media: data.media && Array.isArray(data.media) ? {
+            create: data.media.map((m: any) => ({
+              tipo: m.tipo,
+              caminho: m.caminho
+            }))
+          } : undefined
         },
+        include: { media: true }
       });
       return {
         ...product,
+        preço: product.preco,
+        descrição: product.descricao,
         ingredientes: typeof product.ingredientes === 'string' ? JSON.parse(product.ingredientes) : product.ingredientes
       };
     } catch (error: any) {
@@ -284,10 +293,20 @@ export async function registerRoutes(fastify: FastifyInstance) {
           ingredientes: data.ingredientes ? JSON.stringify(data.ingredientes) : undefined,
           ativo: data.ativo,
           imagem: data.imagem,
+          media: data.media && Array.isArray(data.media) ? {
+            deleteMany: {},
+            create: data.media.map((m: any) => ({
+              tipo: m.tipo,
+              caminho: m.caminho
+            }))
+          } : undefined
         },
+        include: { media: true }
       });
       return {
         ...product,
+        preço: product.preco,
+        descrição: product.descricao,
         ingredientes: typeof product.ingredientes === 'string' ? JSON.parse(product.ingredientes) : product.ingredientes
       };
     } catch (error: any) {

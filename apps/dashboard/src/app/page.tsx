@@ -1270,6 +1270,20 @@ export default function DashboardPage() {
               created_at: product.created_at || new Date().toISOString()
             });
             if (error) throw error;
+
+            // Sync media files in media table
+            const mediaList = product.media || [];
+            await sb.from('media').delete().eq('produto_id', product.id);
+            if (mediaList.length > 0) {
+              const { error: mediaErr } = await sb.from('media').insert(
+                mediaList.map((m: any) => ({
+                  produto_id: product.id,
+                  tipo: m.tipo,
+                  caminho: m.caminho
+                }))
+              );
+              if (mediaErr) throw mediaErr;
+            }
           } else if (type === 'delete') {
             const { error } = await sb.from('products').delete().eq('id', product.id);
             if (error) throw error;
