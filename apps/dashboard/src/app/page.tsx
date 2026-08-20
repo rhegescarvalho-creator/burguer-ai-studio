@@ -1210,7 +1210,51 @@ export default function DashboardPage() {
           notifyTvUpdate();
         }
       })
-      .catch(() => console.log('Fastify API offline, using localStorage fallback'));
+      .catch(async (err) => {
+        console.warn('Fastify API offline, attempting direct Supabase load fallback...', err);
+        try {
+          const { createClient } = require('@supabase/supabase-js');
+          const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qjhrlqpsfzaycoaekwqh.supabase.co';
+          const sbKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_c0x3S20RA_xIVMed3cPpFQ_kO1XXul6';
+          const sb = createClient(sbUrl, sbKey);
+          
+          // Query products
+          const { data: dbProducts, error: prodErr } = await sb.from('products').select('*');
+          if (prodErr) throw prodErr;
+          
+          // Query media
+          const { data: dbMedia, error: mediaErr } = await sb.from('media').select('*');
+          if (mediaErr) throw mediaErr;
+          
+          // Map media to products
+          const productsWithMedia = dbProducts.map((p: any) => {
+            const productMedia = dbMedia
+              ? dbMedia
+                  .filter((m: any) => m.produto_id === p.id)
+                  .map((m: any) => ({
+                    id: m.id,
+                    produtoId: m.produto_id,
+                    tipo: m.tipo,
+                    caminho: m.caminho,
+                    createdAt: m.created_at
+                  }))
+              : [];
+            return {
+              ...p,
+              preço: p.preco,
+              descrição: p.descricao,
+              media: productMedia
+            };
+          });
+          
+          const normalized = productsWithMedia.map(normalizeProduct);
+          setProducts(normalized);
+          safeSetLocalStorage('burger_studio_products', JSON.stringify(normalized));
+          notifyTvUpdate();
+        } catch (sbErr: any) {
+          console.error('Direct Supabase load fallback failed:', sbErr.message);
+        }
+      });
   }, []);
 
   const notifyTvUpdate = () => {
