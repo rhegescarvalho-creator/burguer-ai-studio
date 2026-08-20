@@ -21785,9 +21785,35 @@ var require_dist5 = __commonJS({
     exports2.prisma = void 0;
     var path_1 = __importDefault2(require("path"));
     var client_1 = require("@prisma/client");
-    if (!process.env.DATABASE_URL) {
-      const dbPath = path_1.default.resolve(__dirname, "../prisma/dev.db");
-      process.env.DATABASE_URL = `file:${dbPath}`;
+    var fs_1 = __importDefault2(require("fs"));
+    var currentDir = __dirname;
+    for (let i = 0; i < 5; i++) {
+      const envPath = path_1.default.join(currentDir, ".env");
+      if (fs_1.default.existsSync(envPath)) {
+        try {
+          const envContent = fs_1.default.readFileSync(envPath, "utf8");
+          envContent.split("\n").forEach((line) => {
+            const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+            if (match) {
+              const key = match[1];
+              let value = match[2] || "";
+              if (value.startsWith('"') && value.endsWith('"'))
+                value = value.slice(1, -1);
+              else if (value.startsWith("'") && value.endsWith("'"))
+                value = value.slice(1, -1);
+              if (!process.env[key]) {
+                process.env[key] = value.trim();
+              }
+            }
+          });
+        } catch (e) {
+        }
+        break;
+      }
+      const parentDir = path_1.default.dirname(currentDir);
+      if (parentDir === currentDir)
+        break;
+      currentDir = parentDir;
     }
     exports2.prisma = globalThis.prisma || new client_1.PrismaClient();
     if (process.env.NODE_ENV !== "production") {
@@ -22029,11 +22055,20 @@ async function registerRoutes(fastify2) {
           descricao: data.descri\u00E7\u00E3o || data.descricao || "",
           ingredientes: JSON.stringify(data.ingredientes || []),
           ativo: data.ativo !== false,
-          imagem: data.imagem || "/foto.png"
-        }
+          imagem: data.imagem || "/foto.png",
+          media: data.media && Array.isArray(data.media) ? {
+            create: data.media.map((m) => ({
+              tipo: m.tipo,
+              caminho: m.caminho
+            }))
+          } : void 0
+        },
+        include: { media: true }
       });
       return {
         ...product,
+        pre\u00E7o: product.preco,
+        descri\u00E7\u00E3o: product.descricao,
         ingredientes: typeof product.ingredientes === "string" ? JSON.parse(product.ingredientes) : product.ingredientes
       };
     } catch (error) {
@@ -22053,11 +22088,21 @@ async function registerRoutes(fastify2) {
           descricao: data.descri\u00E7\u00E3o || data.descricao,
           ingredientes: data.ingredientes ? JSON.stringify(data.ingredientes) : void 0,
           ativo: data.ativo,
-          imagem: data.imagem
-        }
+          imagem: data.imagem,
+          media: data.media && Array.isArray(data.media) ? {
+            deleteMany: {},
+            create: data.media.map((m) => ({
+              tipo: m.tipo,
+              caminho: m.caminho
+            }))
+          } : void 0
+        },
+        include: { media: true }
       });
       return {
         ...product,
+        pre\u00E7o: product.preco,
+        descri\u00E7\u00E3o: product.descricao,
         ingredientes: typeof product.ingredientes === "string" ? JSON.parse(product.ingredientes) : product.ingredientes
       };
     } catch (error) {
@@ -22109,11 +22154,15 @@ var init = async () => {
   await server.register(registerRoutes);
   initialized = true;
 };
-var index_default = async (req, res) => {
+var handler = async (req, res) => {
   await init();
   await server.ready();
   server.server.emit("request", req, res);
 };
+var index_default = handler;
+if (typeof module !== "undefined") {
+  module.exports = handler;
+}
 if (process.env.NODE_ENV !== "production") {
   const start = async () => {
     try {

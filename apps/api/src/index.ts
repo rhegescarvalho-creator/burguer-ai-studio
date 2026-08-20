@@ -23,11 +23,15 @@ const init = async () => {
 };
 
 // For Vercel Serverless environment
-export default async (req: any, res: any) => {
+const handler = async (req: any, res: any) => {
   await init();
   await server.ready();
   server.server.emit('request', req, res);
 };
+export default handler;
+if (typeof module !== 'undefined') {
+  module.exports = handler;
+}
 
 // For local running
 if (process.env.NODE_ENV !== 'production') {

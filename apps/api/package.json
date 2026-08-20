@@ -4,7 +4,7 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build --prefix ../.. --workspace=@burger-ai/types --workspace=@burger-ai/database && tsc && esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=api/index.js --external:fastify --external:@fastify/cors --external:dotenv --external:@prisma/client --external:prisma",
+    "build": "npm run build --prefix ../.. --workspace=@burger-ai/types --workspace=@burger-ai/database && tsc && esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=\"api/[...all].js\" --external:fastify --external:@fastify/cors --external:dotenv --external:@prisma/client --external:prisma",
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
     "start": "node dist/index.js"
   },
