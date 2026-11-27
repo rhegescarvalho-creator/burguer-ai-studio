@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "npm run build --prefix ../.. --workspace=@burger-ai/types --workspace=@burger-ai/ui && next dev --port 3000",
     "build": "npm run build --prefix ../.. --workspace=@burger-ai/types --workspace=@burger-ai/ui && next build",
     "start": "next start"
   },
